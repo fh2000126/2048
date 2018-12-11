@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <style>
+        .game{
+        width: 510px;
+        height: 510px;
+        background-color: gray;
+        margin: 10px auto;
+        border-radius: 10px;
+        position: relative;
+    }
+    .name{
+        font-size: 30px;
+        font-weight:bolder;
+        margin: 0 auto;
+        width: 200px;
+    }
+    div.row{
+        width: 100%;
+
+    }
+    div.row div.items{
+        float: left;
+        width: 90px;
+        height: 90px;
+        margin-left: 10px;
+        background-color:white;
+        margin-top: 10px;
+        font-size: 25px;
+        text-align: center;
+        line-height: 90px;
+    }
+    .start{
+        margin: 10px auto;
+        width: 100px;
+        height: 50px;
+        font-size: 20px;
+        font-weight: 700;
+        display: block;
+    }
+    .gameover{
+        position: absolute;
+        width: 240px;
+        height: 80px;
+        background-color: darkgray;
+        left: 50%;
+        transform: translate(-50%,-50%);
+         top:50%;
+         border-radius: 10px;
+         text-align: center;
+         line-height: 80px;
+         display: none;
+    }
+    .gameover a{
+        color: red;
+        text-decoration: none;
+    }
+    .win{
+        position: absolute;
+        width: 240px;
+        height: 80px;
+        background-color: darkgray;
+        left: 50%;
+        transform: translate(-50%,-50%);
+         top:50%;
+         font-size: 30px;
+         border-radius: 10px;
+         text-align: center;
+         line-height: 80px;
+         color: red;
+         display: none;
+    }
+    .jieshou{
+        width: 600px;
+        font-size: 16px;
+        font-weight:bolder;
+        margin: 0 auto;
+        background-color: palegreen;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="name">2048小游戏</div>
+    <div class="jieshou">
+        游戏玩法：
+        在4*4的16宫格中，您可以选择上、下、左、右四个方向进行操作，数字会按方向移动，相邻的两个数字相同就会合并，组成更大的数字，每次移动或合并后会增加一个数字
+        当16宫格中没有空格子，且四个方向都无法操作时，游戏结束。
+        目的是合并出2048这个数字，获得更高的分数。
+    </div>
+    <div class="game">
+        <div class="gameover">GAMEOVER 请重新<a href="javascript:;" class="res">开始游戏</a></div>
+        <div class="win">YOU WIN</div>
+        <div class="row">
+            <div class="items  emptyItem x0y0" x="0" y="0"></div>
+            <div class="items  emptyItem x0y1" x="0" y="1"></div>
+            <div class="items  emptyItem x0y2" x="0" y="2"></div>
+            <div class="items  emptyItem x0y3" x="0" y="3"></div>
+            <div class="items  emptyItem x0y4" x="0" y="4"></div>
+        </div>
+        <div class="row">
+            <div class="items  emptyItem x1y0" x="1" y="0"></div>
+            <div class="items  emptyItem x1y1" x="1" y="1"></div>
+            <div class="items  emptyItem x1y2" x="1" y="2"></div>
+            <div class="items  emptyItem x1y3" x="1" y="3"></div>
+            <div class="items  emptyItem x1y4" x="1" y="4"></div>
+        </div>
+        <div class="row">
+            <div class="items  emptyItem x2y0" x="2" y="0"></div>
+            <div class="items  emptyItem x2y1" x="2" y="1"></div>
+            <div class="items  emptyItem x2y2" x="2" y="2"></div>
+            <div class="items  emptyItem x2y3" x="2" y="3"></div>
+            <div class="items  emptyItem x2y4" x="2" y="4"></div>
+        </div>
+        <div class="row">
+            <div class="items  emptyItem x3y0" x="3" y="0"></div>
+            <div class="items  emptyItem x3y1" x="3" y="1"></div>
+            <div class="items  emptyItem x3y2" x="3" y="2"></div>
+            <div class="items  emptyItem x3y3" x="3" y="3"></div>
+            <div class="items  emptyItem x3y4" x="3" y="4"></div>
+        </div>
+        <div class="row">
+            <div class="items  emptyItem x4y0" x="4" y="0"></div>
+            <div class="items  emptyItem x4y1" x="4" y="1"></div>
+            <div class="items  emptyItem x4y2" x="4" y="2"></div>
+            <div class="items  emptyItem x4y3" x="4" y="3"></div>
+            <div class="items  emptyItem x4y4" x="4" y="4"></div>
+        </div>
+    </div>
+    <input type="button" value="开始" class="start">
+</body>
+
+</html>
+<script src="./jquery-2.2.4.min.js"></script>
+<script>
+    $(function () {
+        $(".start").click(function () {
+            for (var i = 0; i < $(".items").length; i++) {
+                $(".items").eq(i).html('').removeClass('nonEmptyItem').addClass('emptyItem');
+            }
+            $(".win").hide();
+            newNum();
+            newNum();
+            refreshColor();
+            $('body').keydown(function (e) {
+            switch (e.keyCode) {
+                case 37:
+                    // console.log("left");
+                    move('left');
+                    isGameover();
+                    win();
+                    break;
+                case 38:
+                    // console.log("top");
+                    move("top")
+                    isGameover()
+                    win();
+                    break;
+                case 39:
+                    // console.log("right");
+                    move("right")
+                    isGameover()
+                    win();
+                    break;
+                case 40:
+                    // console.log("bottom");
+                    move("bottom")
+                    isGameover()
+                    win();
+                    break;
+            }
+        })
+        })
+        $(".res").click(function () {
+            $(".start").click();
+            $(".gameover").hide();
+        });
+
+        function newNum() {
+            var arr = [2, 2, 2, 4];
+            var newNum = arr[Math.floor(Math.random() * 4)];
+            var newRndSite = Math.floor(Math.random() * $('.emptyItem').length);
+            $(".emptyItem").eq(newRndSite).html(newNum).removeClass("emptyItem").addClass("nonEmptyItem")
+        }
+
+        function refreshColor() {
+            for (var i = 0; i < $('.items').length; i++) {
+                // console.log(items.eq(i).parent().index());
+                switch ($('.items').eq(i).html()) {
+                    case '':
+                        $('.items').eq(i).css('background', '');
+                        break;
+                    case '2':
+                        $('.items').eq(i).css('background', 'rgb(250, 225, 188)');
+                        break;
+                    case '4':
+                        $('.items').eq(i).css('background', 'rgb(202, 240, 240)');
+                        break;
+                    case '8':
+                        $('.items').eq(i).css('background', 'rgb(117, 231, 193)');
+                        break;
+                    case '16':
+                        $('.items').eq(i).css('background', 'rgb(240, 132, 132)');
+                        break;
+                    case '32':
+                        $('.items').eq(i).css('background', 'rgb(181, 240, 181)');
+                        break;
+                    case '64':
+                        $('.items').eq(i).css('background', 'rgb(182, 210, 246)');
+                        break;
+                    case '128':
+                        $('.items').eq(i).css('background', 'rgb(255, 207, 126)');
+                        break;
+                    case '256':
+                        $('.items').eq(i).css('background', 'rgb(250, 216, 216)');
+                        break;
+                    case '512':
+                        $('.items').eq(i).css('background', 'rgb(124, 183, 231)');
+                        break;
+                    case '1024':
+                        $('.items').eq(i).css('background', 'rgb(225, 219, 215)');
+                        break;
+                    case '2048':
+                        $('.items').eq(i).css('background', 'rgb(221, 160, 221)');
+                        break;
+                    case '4096':
+                        $('.items').eq(i).css('background', 'rgb(250, 139, 176)');
+                        break;
+                }
+            }
+        }
+
+    
+
+        function getSideItem(direction, currentItme) {
+            var currentItmeX = currentItme.attr("x") - 0;
+            var currentItmeY = currentItme.attr("y") - 0;
+            switch (direction) {
+                case 'left':
+                    var sideItemY = currentItmeY - 1;
+                    var sideItemX = currentItmeX;
+                    break
+                case 'right':
+                    var sideItemY = currentItmeY + 1;
+                    var sideItemX = currentItmeX;
+                    break
+                case 'top':
+                    var sideItemY = currentItmeY;
+                    var sideItemX = currentItmeX - 1;
+                    break
+                case 'bottom':
+                    var sideItemY = currentItmeY;
+                    var sideItemX = currentItmeX + 1;
+                    break;
+            }
+            var sideItem = $('.row .x' + sideItemX + 'y' + sideItemY);
+            // console.log(sideItem);
+
+            return sideItem;
+        }
+
+        function itmeMove(direction, currentItme) {
+            var sideItem = getSideItem(direction, currentItme);
+            // console.log(sideItem.length);
+            if (sideItem.length == 0) {
+
+            } else if (sideItem.html() == "") {
+                sideItem.html(currentItme.html()).removeClass('emptyItem').addClass('nonEmptyItem');
+                currentItme.html("").removeClass('nonEmptyItem').addClass('emptyItem');
+                itmeMove(direction, sideItem);
+            } else if (sideItem.html() != currentItme.html()) {
+
+            } else if (sideItem.html() == currentItme.html()) {
+                sideItem.html(sideItem.html() * 2);
+                currentItme.html("").removeClass('nonEmptyItem').addClass('emptyItem');
+            }
+
+
+        }
+
+        function move(direction) {
+            var nonEmptyItem = $(".nonEmptyItem");
+            if (direction == "left" || direction == "top") {
+                for (var i = 0; i < nonEmptyItem.length; i++) {
+                    var currentItme = nonEmptyItem.eq(i);
+                    itmeMove(direction, currentItme);
+
+                }
+            } else if (direction == "right" || direction == "bottom") {
+                for (var i = nonEmptyItem.length - 1; i >= 0; i--) {
+                    var currentItme = nonEmptyItem.eq(i);
+                    itmeMove(direction, currentItme);
+                }
+            }
+            newNum();
+            refreshColor()
+        }
+
+        function isGameover() {
+            if ($(".items").length == $(".nonEmptyItem").length) {
+                for (var i = 0; i < $(".nonEmptyItem").length; i++) {
+                    var currentItme = $(".nonEmptyItem").eq(i);
+
+                    console.log(getSideItem("up", currentItme).html());
+                    console.log(currentItme.html());
+
+                    if (getSideItem("top", currentItme).length != 0 && getSideItem("top", currentItme).html() ==
+                        currentItme.html()) {
+                        return;
+                    } else if (getSideItem("bottom", currentItme).length != 0 && getSideItem("bottom",
+                            currentItme).html() == currentItme.html()) {
+                        return;
+                    } else if (getSideItem("right", currentItme).length != 0 && getSideItem("right",
+                            currentItme).html() == currentItme.html()) {
+                        return;
+                    } else if (getSideItem("left", currentItme).length != 0 && getSideItem("left", currentItme)
+                        .html() == currentItme.html()) {
+                        return;
+                    }
+                }
+            } else {
+                return;
+            }
+
+            $(".gameover").show();
+
+        }
+
+        function win() {
+            for (var i = 0; i < $(".nonEmptyItem").length; i++) {
+                if ($(".nonEmptyItem").eq(i).html() == 2048) {
+                    $(".win").show();
+                    break;
+                }
+            }
+        }
+    })
+</script>
